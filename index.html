@@ -4,40 +4,342 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Shaders — nicapotato</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
     <style>
+      :root {
+        --nt-pixel-yellow: #ffde44;
+        --nt-pixel-ink: #0d0d0d;
+        --nt-exp-job-red: #e53935;
+        --nt-pixel-border: 4px solid var(--nt-pixel-ink);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: system-ui, sans-serif;
-        max-width: 40rem;
-        margin: 2rem auto;
-        padding: 0 1rem;
+        margin: 0;
+        min-height: 100%;
+        min-width: 320px;
+        background: #0d0d0d;
+        color: #e8eaed;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          Arial,
+          sans-serif;
         line-height: 1.5;
       }
-      h1 {
-        font-size: 1.25rem;
+
+      .shaders-page {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 1.5rem 1.25rem 3rem;
       }
-      h2 {
-        font-size: 1rem;
-        margin-top: 1.5rem;
+
+      .shaders__header {
+        margin-bottom: 2.25rem;
       }
-      ul {
-        padding-left: 1.25rem;
+
+      .shaders__title--pixel {
+        font-family: "Press Start 2P", monospace;
+        text-transform: uppercase;
+        font-size: clamp(0.82rem, 3.8vw, 1.2rem);
+        line-height: 2;
+        letter-spacing: 0.08em;
+        font-weight: 400;
+        margin: 0;
+        color: #f6f8fa;
+        -webkit-font-smoothing: none;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeSpeed;
+        font-kerning: none;
+        font-variant-ligatures: none;
+        border-bottom: 4px solid var(--nt-pixel-yellow);
+        padding-bottom: 1em;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      @media screen and (min-width: 768px) {
+        .shaders__title--pixel {
+          font-size: clamp(1rem, 2.8vw, 1.28rem);
+        }
+      }
+
+      .shaders__subtitle--pixel {
+        font-family: "Press Start 2P", monospace;
+        text-transform: uppercase;
+        font-size: clamp(0.42rem, 1.55vw, 0.55rem);
+        line-height: 2.4;
+        letter-spacing: 0.06em;
+        font-weight: 400;
+        margin: 1.25rem 0 0;
+        color: rgba(232, 234, 237, 0.72);
+        max-width: 52rem;
+        -webkit-font-smoothing: none;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeSpeed;
+        font-kerning: none;
+        font-variant-ligatures: none;
+      }
+
+      .shaders__section {
+        margin-top: 2.5rem;
+      }
+
+      .shaders__section-title--pixel {
+        font-family: "Press Start 2P", monospace;
+        font-size: clamp(0.55rem, 2vw, 0.75rem);
+        line-height: 2;
+        letter-spacing: 0.08em;
+        font-weight: 400;
+        margin: 0 0 1.25rem;
+        color: #f6f8fa;
+        -webkit-font-smoothing: none;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeSpeed;
+        font-kerning: none;
+        font-variant-ligatures: none;
+        border-bottom: 4px solid var(--nt-pixel-ink);
+        padding-bottom: 0.85em;
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        text-align: left;
+        text-transform: uppercase;
+      }
+
+      @media screen and (min-width: 768px) {
+        .shaders__section-title--pixel {
+          font-size: clamp(0.65rem, 1.6vw, 0.82rem);
+        }
+      }
+
+      .shaders__grid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .shader-card {
+        display: flex;
+        flex: 1 1 200px;
+        min-height: 6.25rem;
+        max-width: 100%;
+        min-width: min(100%, 200px);
+        align-items: center;
+        justify-content: center;
+        padding: 1.35rem 1.1rem;
+        border-radius: 0;
+        border: 4px solid var(--nt-pixel-ink);
+        box-shadow: 6px 6px 0 rgba(13, 13, 13, 0.35);
+        text-decoration: none;
+        cursor: pointer;
+        text-align: center;
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.12s ease,
+          filter 0.12s ease;
+      }
+
+      .shader-card:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0 rgba(13, 13, 13, 0.45);
+        filter: brightness(1.05);
+      }
+
+      .shader-card:focus-visible {
+        outline: 3px solid var(--nt-pixel-yellow);
+        outline-offset: 3px;
+      }
+
+      .shader-card__title {
+        margin: 0;
+        font-family: "Press Start 2P", monospace;
+        text-transform: uppercase;
+        font-size: clamp(0.48rem, 1.85vw, 0.68rem);
+        line-height: 1.65;
+        letter-spacing: 0.06em;
+        font-weight: 400;
+        -webkit-font-smoothing: none;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeSpeed;
+        font-kerning: none;
+        font-variant-ligatures: none;
+      }
+
+      .shader-card--c0 {
+        background: var(--nt-pixel-yellow);
+        color: var(--nt-pixel-ink);
+      }
+      .shader-card--c1 {
+        background: #e53935;
+        color: #fff;
+      }
+      .shader-card--c2 {
+        background: #7c4dff;
+        color: #fff;
+      }
+      .shader-card--c3 {
+        background: #00bfa5;
+        color: var(--nt-pixel-ink);
+      }
+      .shader-card--c4 {
+        background: #ff9100;
+        color: var(--nt-pixel-ink);
+      }
+      .shader-card--c5 {
+        background: #29b6f6;
+        color: var(--nt-pixel-ink);
+      }
+      .shader-card--c6 {
+        background: #ec407a;
+        color: #fff;
+      }
+      .shader-card--c7 {
+        background: #cddc39;
+        color: var(--nt-pixel-ink);
+      }
+      .shader-card--c8 {
+        background: #ab47bc;
+        color: #fff;
+      }
+      .shader-card--c9 {
+        background: #26a69a;
+        color: #fff;
+      }
+      .shader-card--c10 {
+        background: #5c6bc0;
+        color: #fff;
+      }
+
+      .shaders__footer--pixel {
+        margin: 2.5rem 0 0;
+        padding-top: 1.25rem;
+        border-top: 3px solid var(--nt-pixel-ink);
+        font-family: "Press Start 2P", monospace;
+        text-transform: uppercase;
+        font-size: clamp(0.32rem, 1.15vw, 0.42rem);
+        line-height: 2.2;
+        letter-spacing: 0.04em;
+        color: rgba(232, 234, 237, 0.75);
+        max-width: 100%;
+        word-wrap: break-word;
+        -webkit-font-smoothing: none;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeSpeed;
+      }
+
+      .shaders__footer--pixel a {
+        color: #79c0ff;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .shaders__footer--pixel a:hover {
+        color: #a5d6ff;
+      }
+
+      @media (prefers-color-scheme: light) {
+        body {
+          color: #1f2328;
+          background: #eceff1;
+        }
+
+        .shaders__title--pixel {
+          color: #0d0d0d;
+          border-bottom-color: var(--nt-pixel-ink);
+        }
+
+        .shaders__subtitle--pixel {
+          color: rgba(31, 35, 40, 0.72);
+        }
+
+        .shaders__section-title--pixel {
+          color: #0d0d0d;
+        }
+
+        .shaders__footer--pixel {
+          color: rgba(31, 35, 40, 0.65);
+          border-top-color: var(--nt-pixel-ink);
+        }
+
+        .shaders__footer--pixel a {
+          color: #0969da;
+        }
+
+        .shaders__footer--pixel a:hover {
+          color: #0550ae;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>GLSL / WebGL2 demos</h1>
-    <h2>WebGL2 (GLSL ES 3.00)</h2>
-    <ul>
-      <li><a href="demos/squid-1/index.html">Squid 1</a></li>
-      <li><a href="demos/squid-2/index.html">Squid 2</a></li>
-      <li><a href="demos/fractal/index.html">Fractal pattern</a></li>
-      <li><a href="demos/fractal-rotation/index.html">Fractal rotation</a></li>
-      <li><a href="demos/fractal-tiles/index.html">Fractal tiles</a></li>
-      <li><a href="demos/corridor/index.html">Corridor</a></li>
-    </ul>
-    <h2>WebGPU (WGSL)</h2>
-    <ul>
-      <li><a href="webgpu-squid/index.html">Squid (WebGPU)</a></li>
-    </ul>
+    <div class="shaders-page">
+      <header class="shaders__header">
+        <h1 class="shaders__title shaders__title--pixel">GLSL / WebGL demos</h1>
+        <p class="shaders__subtitle shaders__subtitle--pixel">
+          STATIC SHADER DEMOS — WEBGL2 &amp; WEBGPU
+        </p>
+      </header>
+
+      <section class="shaders__section" aria-labelledby="webgl2-heading">
+        <h2 id="webgl2-heading" class="shaders__section-title shaders__section-title--pixel">
+          WebGL2 (GLSL ES 3.00)
+        </h2>
+        <div class="shaders__grid">
+          <a class="shader-card shader-card--c0" href="demos/squid-1/index.html">
+            <span class="shader-card__title">Squid 1</span>
+          </a>
+          <a class="shader-card shader-card--c1" href="demos/squid-2/index.html">
+            <span class="shader-card__title">Squid 2</span>
+          </a>
+          <a class="shader-card shader-card--c2" href="demos/fractal/index.html">
+            <span class="shader-card__title">Fractal pattern</span>
+          </a>
+          <a class="shader-card shader-card--c3" href="demos/fractal-rotation/index.html">
+            <span class="shader-card__title">Fractal rotation</span>
+          </a>
+          <a class="shader-card shader-card--c4" href="demos/fractal-tiles/index.html">
+            <span class="shader-card__title">Fractal tiles</span>
+          </a>
+          <a class="shader-card shader-card--c5" href="demos/corridor/index.html">
+            <span class="shader-card__title">Corridor</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="shaders__section" aria-labelledby="webgpu-heading">
+        <h2 id="webgpu-heading" class="shaders__section-title shaders__section-title--pixel">
+          WebGPU (WGSL)
+        </h2>
+        <div class="shaders__grid">
+          <a class="shader-card shader-card--c6" href="webgpu-squid/index.html">
+            <span class="shader-card__title">Squid (WebGPU)</span>
+          </a>
+        </div>
+      </section>
+
+      <p class="shaders__footer shaders__footer--pixel">
+        PUBLIC REPO ON GITHUB PAGES —
+        <a
+          href="https://github.com/nicapotato/shaders"
+          target="_blank"
+          rel="noopener noreferrer"
+          >https://github.com/nicapotato/shaders</a>
+      </p>
+    </div>
   </body>
 </html>
